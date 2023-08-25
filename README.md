@@ -38,9 +38,8 @@ shard3: 172.xx.xx.169 172.xx.xx.170 172.xx.xx.171
 # Script execution and invocation order
 Note: The mongod,config,mongos port/installation directory /cacheSizeGB(set according to the memory 0.85)/ number of secondary nodes in the replica set has been defined in the script. You can change the value based on site requirements.
 
-                                              | 1.1 mongodb_install.sh
-cluster_mongodb_mutil.py --> mongo_mutil.sh-->| 1.2 config_install.sh
-                                              | 1.3 mongos_install.sh
+                                                
+cluster_mongodb_mutil.py --> mongo_mutil.sh-->{ 1.1 mongodb_install.sh , 1.2 config_install.sh , 1.3 mongos_install.sh }
 
 
 1.5 运行安装脚本,等待脚本运行完提示安装完成。
