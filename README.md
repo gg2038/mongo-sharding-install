@@ -12,7 +12,7 @@
 1.3 MongoDB cluster deployment script
 
  例子：
- example:
+example:
 mongos: 172.21.14.157 172.21.14.158 172.21.14.159
 config: 172.21.14.160 172.21.14.161 172.21.14.162
 
