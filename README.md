@@ -13,12 +13,12 @@
 
  例子：
 example:
-mongos: 172.21.14.157 172.21.14.158 172.21.14.159
-config: 172.21.14.160 172.21.14.161 172.21.14.162
+mongos: 172.xx.xx.157 172.xx.xx.158 172.xx.xx.159
+config: 172.xx.xx.160 172.xx.xx.161 172.xx.xx.162
 
-shard1: 172.21.14.163 172.21.14.164 172.21.14.165
-shard2: 172.21.14.166 172.21.14.167 172.21.14.168
-shard3: 172.21.14.169 172.21.14.170 172.21.14.171
+shard1: 172.xx.xx.163 172.xx.xx.164 172.xx.xx.165
+shard2: 172.xx.xx.166 172.xx.xx.167 172.xx.xx.168
+shard3: 172.xx.xx.169 172.xx.xx.170 172.xx.xx.171
 
 #把cluster_mongodb_mutil.py脚本中的 iplist_s变量修改成mongs的IP
                           把脚本 中的iplist_c变量修改成config的IP
@@ -29,9 +29,9 @@ shard3: 172.21.14.169 172.21.14.170 172.21.14.171
                           Change the iplist variable in the script to the IP of the shard
                           Note IP addresses are separated by Spaces. Each sub-list in the fragment list represents the IP address of a fragment's replica set
 
-["172.21.14.157 172.21.14.158 172.21.14.159"]
-["172.21.14.160 172.21.14.161 172.21.14.162"]
-["172.21.14.163 172.21.14.164 172.21.14.165"]["172.21.14.166 172.21.14.167 172.21.14.168"]["172.21.14.169 172.21.14.170 172.21.14.171"]
+["172.xx.xx.157 172.xx.xx.158 172.xx.xx.159"]
+["172.xx.xx.160 172.xx.xx.161 172.xx.xx.162"]
+["172.xx.xx.163 172.xx.xx.164 172.xx.xx.165"]["172.xx.xx.166 172.xx.xx.167 172.xx.xx.168"]["172.xx.xx.169 172.xx.xx.170 172.xx.xx.171"]
 
 #脚本执行和调用顺序
 #注:脚本中已经定义了mongod,config,mongos端口/安装目录/cacheSizeGB(脚本根据机器内存0.85设置)/副本集从节点数，如需修改可根据实际情况修改。
@@ -51,8 +51,8 @@ cluster_mongodb_mutil.py --> mongo_mutil.sh-->| 1.2 config_install.sh
 #脚本运行完后会把集群的信息写入config库的集合mongodb_configs中
 #When the script is finished, the cluster information is written to the mongodb_configs collection in the config library
 
-config@host-172-21-14-157:30000 5>db.mongodb_configs.find()
-[172.21.14.157 172.21.14.158 172.21.14.159][172.21.14.160 172.21.14.161 172.21.14.162][172.21.14.163 172.21.14.164 172.21.14.165][172.21.14.166 172.21.14.167 172.21.14.168][172.21.14.169 172.21.14.170 172.21.14.171]
+config@host-172-xx-xx-157:30000 5>db.mongodb_configs.find()
+[172.xx.xx.157 172.xx.xx.158 172.xx.xx.159][172.xx.xx.160 172.xx.xx.161 172.xx.xx.162][172.xx.xx.163 172.xx.xx.164 172.xx.xx.165][172.xx.xx.166 172.xx.xx.167 172.xx.xx.168][172.xx.xx.169 172.xx.xx.170 172.xx.xx.171]
 
 1.6 脚本mongodb_shard_join.py 是用python连接MongoDB集群 写入数据，方便验证集群地址中一个地址下线后不影响集群使用.
 1.6 The script mongodb_shard_join.py connects to the MongoDB cluster using python to write data to facilitate the verification that the cluster usage will not be affected if an address in the cluster goes offline.
