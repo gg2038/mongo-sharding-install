@@ -1,5 +1,6 @@
+
 # MongoDB_cluster_install
-### HGR_HLN_HJQ ###
+# HGR_HLN_HJQ
 
 1.1 集群所有机器配置 检查脚本 check_host.sh
 1.1 Configuration check script for all machines in the cluster
@@ -7,11 +8,10 @@
 1.2 集群所有机器OS层的优化脚本　os_optimiz_mult.sh
 1.2 Optimize scripts for all machine OS layers in the cluster
 
-
 1.3 MongoDB集群部署脚本 cluster_mongodb_mutil.py
 1.3 MongoDB cluster deployment script
 
- 例子：
+例子：
 example:
 mongos: 172.xx.xx.157 172.xx.xx.158 172.xx.xx.159
 config: 172.xx.xx.160 172.xx.xx.161 172.xx.xx.162
@@ -19,36 +19,34 @@ config: 172.xx.xx.160 172.xx.xx.161 172.xx.xx.162
 shard1: 172.xx.xx.163 172.xx.xx.164 172.xx.xx.165
 shard2: 172.xx.xx.166 172.xx.xx.167 172.xx.xx.168
 shard3: 172.xx.xx.169 172.xx.xx.170 172.xx.xx.171
+把cluster_mongodb_mutil.py脚本中的 iplist_s变量修改成mongs的IP
 
-#把cluster_mongodb_mutil.py脚本中的 iplist_s变量修改成mongs的IP
-                          把脚本 中的iplist_c变量修改成config的IP
-                          把脚本中的iplist变量修改成shard的IP
-                         　注意IP以空格分隔，分片列表中每个子列表代表一个分片的副本集IP
-#Change the iplist_s variable in the cluster_mongodb_mutil.py script to the IP of the mongs
-                          Change the iplist_c variable in the script to the IP of config
-                          Change the iplist variable in the script to the IP of the shard
-                          Note IP addresses are separated by Spaces. Each sub-list in the fragment list represents the IP address of a fragment's replica set
+                      把脚本 中的iplist_c变量修改成config的IP
+                      把脚本中的iplist变量修改成shard的IP
+                     　注意IP以空格分隔，分片列表中每个子列表代表一个分片的副本集IP
+
+Change the iplist_s variable in the cluster_mongodb_mutil.py script to the IP of the mongs
+
+                      Change the iplist_c variable in the script to the IP of config
+                      Change the iplist variable in the script to the IP of the shard
+                      Note IP addresses are separated by Spaces. Each sub-list in the fragment list represents the IP address of a fragment's replica set
 
 ["172.xx.xx.157 172.xx.xx.158 172.xx.xx.159"]
 ["172.xx.xx.160 172.xx.xx.161 172.xx.xx.162"]
 ["172.xx.xx.163 172.xx.xx.164 172.xx.xx.165"]["172.xx.xx.166 172.xx.xx.167 172.xx.xx.168"]["172.xx.xx.169 172.xx.xx.170 172.xx.xx.171"]
+脚本执行和调用顺序
+注:脚本中已经定义了mongod,config,mongos端口/安装目录/cacheSizeGB(脚本根据机器内存0.85设置)/副本集从节点数，如需修改可根据实际情况修改。
+Script execution and invocation order
 
-#脚本执行和调用顺序
-#注:脚本中已经定义了mongod,config,mongos端口/安装目录/cacheSizeGB(脚本根据机器内存0.85设置)/副本集从节点数，如需修改可根据实际情况修改。
-# Script execution and invocation order
 Note: The mongod,config,mongos port/installation directory /cacheSizeGB(set according to the memory 0.85)/ number of secondary nodes in the replica set has been defined in the script. You can change the value based on site requirements.
 
-                                                
 cluster_mongodb_mutil.py --> mongo_mutil.sh-->{ 1.1 mongodb_install.sh , 1.2 config_install.sh , 1.3 mongos_install.sh }
-
 
 1.5 运行安装脚本,等待脚本运行完提示安装完成。
 1.5 Run the installation script and wait until the script is complete.
-
-#python cluster_mongodb_mutil.py
-
-#脚本运行完后会把集群的信息写入config库的集合mongodb_configs中
-#When the script is finished, the cluster information is written to the mongodb_configs collection in the config library
+python cluster_mongodb_mutil.py
+脚本运行完后会把集群的信息写入config库的集合mongodb_configs中
+When the script is finished, the cluster information is written to the mongodb_configs collection in the config library
 
 config@host-172-xx-xx-157:30000 5>db.mongodb_configs.find()
 [172.xx.xx.157 172.xx.xx.158 172.xx.xx.159][172.xx.xx.160 172.xx.xx.161 172.xx.xx.162][172.xx.xx.163 172.xx.xx.164 172.xx.xx.165][172.xx.xx.166 172.xx.xx.167 172.xx.xx.168][172.xx.xx.169 172.xx.xx.170 172.xx.xx.171]
