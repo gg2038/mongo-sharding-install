@@ -4,63 +4,75 @@
 shardid=1
 vers='4.4.18'
 dataroot='/data'
-passw='xxxxx'
+passw=$3
 
-
-if [ "$2" == 1 ];then # mongod
-  ips=$1
-  for ip in $ips
-  do
+function  install_shard(){
+  IFS='|' read -ra elements <<< "$1"
+  for ip in "${elements[@]}"; do
      {
-      ipp=$(ip a|grep  'inet 172'|awk -F' ' '{print $2}'|cut -d'/' -f1)
+      ipp=$(ping `hostname` -c 1|grep PING|grep -Po '(?<=\().*?(?=\))'|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -n 1)
       if [ "$ipp" == "$ip" ];then
-         sh  mongodb_install.sh ${dataroot} ${vers} ${shardid}
+         sh  mongodb_install.sh $2 $3 $4
       elif [ "$ipp" != "$ip" ];then
-         shardnamen='rsshd'$3
+         shardnamen='rsshd'$5
          shardnamey=$(grep replSetName mongodb_install.sh|cut -d':' -f2|grep -Po '(?<=\").*?(?=\")'|tail -n1)
          sed -i "s|$shardnamey|$shardnamen|g" mongodb_install.sh
-         sshpass -p ${passw}  ssh  root@${ip} -o StrictHostKeyChecking=no "if [ ! -d ${dataroot} ];then  mkdir ${dataroot};fi"
-         sshpass -p ${passw} scp mongodb_install.sh mongodb-linux-x86_64-rhel70-${vers}.tgz  root@${ip}:${dataroot}
-         sshpass -p ${passw}  ssh  root@${ip} -o StrictHostKeyChecking=no "cd ${dataroot}/;sh  mongodb_install.sh ${dataroot} ${vers} ${shardid}"
+         sshpass -p $6  ssh  root@${ip} -o StrictHostKeyChecking=no "if [ ! -d $2 ];then  mkdir $2;fi"
+         sshpass -p $6 scp mongodb_install.sh mongodb-linux-x86_64-rhel70-$3.tgz  root@${ip}:$2
+         sshpass -p $6  ssh  root@${ip} -o StrictHostKeyChecking=no "cd $2;sh  mongodb_install.sh $2 $3 $4"
       fi
  echo 'install mongod ......'
      } &
  done
  wait
+}
 
-elif [ "$2" == 2 ];then # config
-  ips=$1
-  for ip in $ips
-  do
+function  install_config(){
+  IFS='|' read -ra elements <<< "$1"
+  for ip in "${elements[@]}"; do
     {
-    ipp=$(ip a|grep  'inet 172'|awk -F' ' '{print $2}'|cut -d'/' -f1)
+    ipp=$(ping `hostname` -c 1|grep PING|grep -Po '(?<=\().*?(?=\))'|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -n 1)
     if [ "$ipp" == "$ip" ];then
-       sh config_install.sh ${dataroot} ${vers}
+       sh config_install.sh $2 $3
     elif [ "$ipp" != "$ip" ];then
-      sshpass -p ${passw}  ssh  root@${ip} -o StrictHostKeyChecking=no "if [ ! -d ${dataroot} ];then  mkdir ${dataroot};fi"
-      sshpass -p ${passw} scp config_install.sh mongodb-linux-x86_64-rhel70-${vers}.tgz  root@${ip}:${dataroot}
-      sshpass -p ${passw}  ssh  root@${ip} -o StrictHostKeyChecking=no "cd ${dataroot}/;sh  config_install.sh ${dataroot} ${vers}"
+      sshpass -p $4  ssh  root@${ip} -o StrictHostKeyChecking=no "if [ ! -d $2 ];then  mkdir $2;fi"
+      sshpass -p $4  scp config_install.sh mongodb-linux-x86_64-rhel70-$3.tgz  root@${ip}:$2
+      sshpass -p $4  ssh  root@${ip} -o StrictHostKeyChecking=no "cd $2;sh  config_install.sh $2 $3"
     fi
   echo 'install config ......'
     } &
   done
   wait
- 
-elif [ "$2" == 3 ];then # mongos
-  ips=$1
-  for ip in $ips
-  do
+}
+
+function  install_mongos(){
+  IFS='|' read -ra elements <<< "$1"
+  for ip in "${elements[@]}"; do
     {
-    ipp=$(ip a|grep  'inet 172'|awk -F' ' '{print $2}'|cut -d'/' -f1)
+    ipp=$(ping `hostname` -c 1|grep PING|grep -Po '(?<=\().*?(?=\))'|grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"|head -n 1)
     if [ "$ipp" == "$ip" ];then
-       sh mongos_install.sh ${dataroot} ${vers}
+       sh mongos_install.sh $2 $3
     elif [ "$ipp" != "$ip" ];then
-      sshpass -p ${passw}  ssh  root@${ip} -o StrictHostKeyChecking=no "if [ ! -d ${dataroot} ];then  mkdir ${dataroot};fi"
-      sshpass -p ${passw} scp mongos_install.sh mongodb-linux-x86_64-rhel70-${vers}.tgz  root@${ip}:${dataroot}
-      sshpass -p ${passw}  ssh  root@${ip} -o StrictHostKeyChecking=no "cd ${dataroot}/;sh mongos_install.sh ${dataroot} ${vers}"
+      sshpass -p $4  ssh  root@${ip} -o StrictHostKeyChecking=no "if [ ! -d $2 ];then  mkdir $2;fi"
+      sshpass -p $4 scp mongos_install.sh mongodb-linux-x86_64-rhel70-${vers}.tgz  root@${ip}:$2
+      sshpass -p $4  ssh  root@${ip} -o StrictHostKeyChecking=no "cd $2;sh mongos_install.sh $2 $3"
     fi
   echo 'install mongos ......'
     } &
   done
   wait
+}
+
+
+if [ "$2" == 1 ];then # mongod
+  ips=`echo $1|sed 's/ /|/g'`
+  rss=$4
+  install_shard $ips ${dataroot} ${vers} ${shardid} ${rss} ${passw}
+elif [ "$2" == 2 ];then # config
+  ips=`echo $1|sed 's/ /|/g'`
+  install_config $ips ${dataroot} ${vers} ${passw}
+
+elif [ "$2" == 3 ];then # mongos
+  ips=`echo $1|sed 's/ /|/g'`
+  install_mongos $ips ${dataroot} ${vers} ${passw}
 fi
