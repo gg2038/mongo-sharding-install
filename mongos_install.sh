@@ -1,4 +1,3 @@
-
 #!/bin/bash
 # config install
 # /data/mongodb /{data,logs,conf}
@@ -92,12 +91,15 @@ setParameter:
 replication:
   localPingThresholdMs: 15
 sharding:
-#  关联配置服务  # Associated configuration service 
-  configDB: rscnf/172.21.14.160:27017,172.21.14.161:27017,172.21.14.162:27017
+#  关联配置服务  # Associated configuration service
+  configDB: rscnf/172.21.231.246:27017,172.21.231.247:27017,172.21.231.248:27017
+#security:
+#  keyFile: "/data/mongodb/conf/keyFile"
 EOF
 
 cat >  /root/.mongorc.js << EOF
-host=db.serverStatus().host;
+//host=db.serverStatus().host;
+host=\``hostname`\`
 cmdCount=1;
 prompt=function(){
 return db+"@"+host+" "+(cmdCount++) +">";
@@ -118,7 +120,6 @@ print(text);
 }
 
 showDate();
-
 EOF
 
     chown -R mongodb:mongodb $dataroot/mongodb
