@@ -36,3 +36,5 @@ Change the iplist_s variable in the cluster_mongodb_mutil.py script to the IP of
 
 
 - 脚本mongodb_shard_join.py 是用python连接MongoDB集群 写入数据，方便验证集群地址中一个地址下线后不影响集群使用. 1.6 The script mongodb_shard_join.py connects to the MongoDB cluster using python to write data to facilitate the verification that the cluster usage will not be affected if an address in the cluster goes offline.
+
+-----Author email： hfh203812@gmail.com ----
