@@ -1,6 +1,4 @@
-
 #!/bin/bash
-
 # /data/mongodb /{data,logs,conf}
 
 dataroot=$1
@@ -119,6 +117,9 @@ replication:
 sharding:
   #作为分片服务 # As a shard service
   clusterRole: shardsvr
+#security:
+#  keyFile: "/data/mongodb/conf/keyFile"
+#  authorization: enabled
 EOF
 sed -i "s|`grep cacheSizeGB ${dataroot}/mongodb/conf/mongo_shard$i.yml|sed 's/^[ \t]*//g'`|cacheSizeGB: "$(echo `free -m|grep Mem|awk -F' ' '{print $4}'`*0.85/1000|bc|cut -d'.' -f1)"|g"  ${dataroot}/mongodb/conf/mongo_shard$i.yml
 
@@ -130,4 +131,3 @@ sed -i "s|`grep cacheSizeGB ${dataroot}/mongodb/conf/mongo_shard$i.yml|sed 's/^[
     systemctl restart mongod_multiple_servers@$i.service
     systemctl enable mongod_multiple_servers@$i.service
 done
-
