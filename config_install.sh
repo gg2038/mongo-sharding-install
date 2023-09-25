@@ -1,4 +1,3 @@
-
 #!/bin/bash
 # config install
 # /data/mongodb /{data,logs,conf}
@@ -112,6 +111,9 @@ sharding:
 #作为配置服务
 #As configuration service
   clusterRole: configsvr
+#security:
+#  keyFile: "/data/mongodb/conf/keyFile"
+#  authorization: enabled
 EOF
 sed -i "s|`grep cacheSizeGB ${dataroot}/mongodb/conf/mongo_config.yml|sed 's/^[ \t]*//g'`|cacheSizeGB: "$(echo `free -m|grep Mem|awk -F' ' '{print $4}'`*0.85/1000|bc|cut -d'.' -f1)"|g"  ${dataroot}/mongodb/conf/mongo_config.yml
 
