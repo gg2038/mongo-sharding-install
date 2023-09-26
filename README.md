@@ -1,5 +1,5 @@
 # MongoDB_cluster_install
-# HGR_HLN_HJQ
+#HGR_HLN_HJQ
 -  集群所有机器配置 检查脚本 check_host.sh 1.1 Configuration check script for all machines in the cluster
 
 -  集群所有机器OS层的优化脚本　os_optimiz_mult.sh 1.2 Optimize scripts for all machine OS layers in the cluster
