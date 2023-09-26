@@ -1,5 +1,5 @@
 # MongoDB_cluster_install
-#HGR_HLN_HJQ
+# HGR_HLN_HJQ
 -  集群所有机器配置 检查脚本 check_host.sh 1.1 Configuration check script for all machines in the cluster
 
 -  集群所有机器OS层的优化脚本　os_optimiz_mult.sh 1.2 Optimize scripts for all machine OS layers in the cluster
@@ -30,7 +30,7 @@ Change the iplist_s variable in the cluster_mongodb_mutil.py script to the IP of
 
  Note: The mongod,config,mongos port/installation directory /cacheSizeGB(set according to the memory 0.85)/ number of secondary nodes in the replica set has been defined in the script. You can change the value based on site requirements.
 
-- cluster_mongodb_mutil.py --> mongo_mutil.sh-->{ 1.1 mongodb_install.sh , 1.2 config_install.sh , 1.3 mongos_install.sh }
+- cluster_mongodb_mutil.py --> mongo_mutil.sh-->{ 1.1 mongodb_install.sh , 1.2 config_install.sh , 1.3 mongos_install.sh } --> cluster_add_security_key.sh
 
 -  运行安装脚本,等待脚本运行完提示安装完成。 1.5 Run the installation script and wait until the script is complete. python cluster_mongodb_mutil.py 脚本运行完后会把集群的信息写入config库的集合mongodb_configs中 When the script is finished, the cluster information is written to the mongodb_configs collection in the config library
 
