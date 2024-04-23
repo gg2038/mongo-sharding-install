@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # /data/mongodb /{data,logs,conf}
 
 dataroot=$1
@@ -24,7 +25,7 @@ fi
 }
 # shardno3rd=`expr $shardid \* 3`
 #shardno1st=`expr $shardno3rd - 2`
-shardno1st=$shardid
+#shardno1st=$shardid
 #wget mongodb-linux-x86_64-rhel70-4.4.18.tgz
 tar xzvf mongodb-linux-x86_64-rhel70-$ver.tgz -C /opt
 ln -snf /opt/mongodb-linux-x86_64-rhel70-$ver /usr/local/mongodb
@@ -78,9 +79,9 @@ TasksAccounting=false
 WantedBy=multi-user.target
 EOF
 systemctl daemon-reload
-j=$shardno1st
-for ((i=1; i<=j; i++))
-do
+i=$shardid
+#for ((i=1; i<=j; i++))
+#do
     mkdir -p $datadir/shard$i
     if [ ! -f $basedir/conf/mongo_shard$i.yml ]; then
     touch ${dataroot}/mongodb/conf/mongo_shard$i.yml
@@ -130,4 +131,5 @@ sed -i "s|`grep cacheSizeGB ${dataroot}/mongodb/conf/mongo_shard$i.yml|sed 's/^[
     chown -R mongodb:mongodb $rpath
     systemctl restart mongod_multiple_servers@$i.service
     systemctl enable mongod_multiple_servers@$i.service
-done
+#done
+
