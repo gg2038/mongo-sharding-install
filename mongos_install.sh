@@ -1,3 +1,4 @@
+
 #!/bin/bash
 # config install
 # /data/mongodb /{data,logs,conf}
@@ -91,8 +92,8 @@ setParameter:
 replication:
   localPingThresholdMs: 15
 sharding:
-#  关联配置服务  # Associated configuration service
-  configDB: rscnf/172.21.231.246:27017,172.21.231.247:27017,172.21.231.248:27017
+#  关联配置服务  # Associated configuration service 
+  configDB: rscnf/xx.xx.242.219:27017,xx.xx.242.188:27017,xx.xx.242.144:27017
 #security:
 #  keyFile: "/data/mongodb/conf/keyFile"
 EOF
