@@ -1,3 +1,4 @@
+
 #!/bin/bash
 # config install
 # /data/mongodb /{data,logs,conf}
