@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-shardid=1
+#shardid=1
 vers='4.4.18'
 dataroot='/data'
 passw=$3
@@ -14,12 +14,13 @@ function  install_shard(){
       if [ "$ipp" == "$ip" ];then
          sh  mongodb_install.sh $2 $3 $4
       elif [ "$ipp" != "$ip" ];then
-         shardnamen='rsshd'$5
+         shardnamen='rsshd'$4
          shardnamey=$(grep replSetName mongodb_install.sh|cut -d':' -f2|grep -Po '(?<=\").*?(?=\")'|tail -n1)
          sed -i "s|$shardnamey|$shardnamen|g" mongodb_install.sh
-         sshpass -p $6  ssh  root@${ip} -o StrictHostKeyChecking=no "if [ ! -d $2 ];then  mkdir $2;fi"
-         sshpass -p $6 scp mongodb_install.sh mongodb-linux-x86_64-rhel70-$3.tgz  root@${ip}:$2
-         sshpass -p $6  ssh  root@${ip} -o StrictHostKeyChecking=no "cd $2;sh  mongodb_install.sh $2 $3 $4"
+         sshpass -p $5  ssh  root@${ip} -o StrictHostKeyChecking=no "if [ ! -d $2 ];then  mkdir $2;fi"
+         sshpass -p $5 scp mongodb_install.sh mongodb-linux-x86_64-rhel70-$3.tgz  root@${ip}:$2
+         echo '副本集节点传入shards '$4
+         sshpass -p $5  ssh  root@${ip} -o StrictHostKeyChecking=no "cd $2;sh  mongodb_install.sh $2 $3 $4"
       fi
  echo 'install mongod ......'
      } &
@@ -67,7 +68,7 @@ function  install_mongos(){
 if [ "$2" == 1 ];then # mongod
   ips=`echo $1|sed 's/ /|/g'`
   rss=$4
-  install_shard $ips ${dataroot} ${vers} ${shardid} ${rss} ${passw}
+  install_shard $ips ${dataroot} ${vers} ${rss} ${passw}
 elif [ "$2" == 2 ];then # config
   ips=`echo $1|sed 's/ /|/g'`
   install_config $ips ${dataroot} ${vers} ${passw}
