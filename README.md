@@ -1,9 +1,11 @@
 # MongoDB_cluster_install
 #HGR_HLN_HJQ
+
 #///////////////////////////////////////////
 版本迭代信息:
 20240426新增功能:主程序python改变IP的输入方法和处理程序，新加检查程序从主程序获取ip串和密码，新加自动自适应获取副本集节点数IP串拼接。
 #///////////////////////////////////////////
+
 -  集群所有机器配置 检查脚本 check_host.sh 1.1 Configuration check script for all machines in the cluster
 
 -  集群所有机器OS层的优化脚本　os_optimiz_mult.sh 1.2 Optimize scripts for all machine OS layers in the cluster
