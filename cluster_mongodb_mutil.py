@@ -6,12 +6,76 @@ import sys
 import time
 import random,string
 import subprocess
-passw='aZHxxxx'
-account_verify = 1 # 0关闭验证 / １开启验证
+passw='xxxx'
 
-iplist_s = ['xxx.xx.242.44 xxx.xx.242.117 xxx.xx.242.128'] #location mongos port:30000
-iplist_c = ['xxx.xx.242.219 xxx.xx.242.188 xxx.xx.242.144'] #location config port:27017
-iplist = [['xxx.xx.242.194 xxx.xx.242.45 xxx.xx.242.157'], ['xxx.xx.242.140 xxx.xx.242.109 xxx.xx.242.148'], ['xxx.xx.242.59 xxx.xx.242.28 xxx.xx.242.170']] #port 40001-4000n
+account_verify = 1 # Cluster validation start ,0 关闭验证(Turn off validation) / １开启验证(Enable verification)
+
+#mongos IP, port:30000
+iplist_so = '''
+172.xx.xxx.160
+ 172.xx.xxx.5
+172.xx.xxx.35
+'''
+#config IP,port:27017
+iplist_co = '''
+  172.xx.xxx.177
+172.xx.xxx.139
+ 172.xx.xxx.95
+'''
+#shard IP shard are separated by '|',port 40001-4000n
+iplisto = '''
+172.xx.xxx.186
+172.xx.xxx.127
+172.xx.xxx.151
+|
+ 172.xx.xxx.117
+172.xx.xxx.181
+172.xx.xxx.193
+|
+172.xx.xxx.197
+172.xx.xxx.58
+172.xx.xxx.178
+'''
+
+
+def ip_handle_shard(ip_list):#shard副本集的ip串处理函数
+   slist = []
+   slistz = []
+   for s in ip_list.split('|'):
+      slist.append(s.strip().replace("\n", " "))
+      slistz.append(slist)
+      slist = []
+   return slistz
+def ip_handle_sc(ip_list):#mongos/config的ip串处理函数
+   slist = []
+   for s in ip_list.split('\n'):
+      slist.append(s.strip())
+   clean_iplist = [item for item in slist if item]
+   clean_iplist_clsp = ' '.join(clean_iplist)
+   iplist_ss = []
+   iplist_ss.append(clean_iplist_clsp)
+   return iplist_ss
+
+iplist_s = ip_handle_sc(iplist_so)
+iplist_c = ip_handle_sc(iplist_co)
+iplist = ip_handle_shard(iplisto)
+
+def main(argv): #外部程序调入逻辑,获取密码和ip地址串
+   if len(argv) < 2:
+       return argv
+   argument = argv[1]
+   ts = ' '
+   sip = ''
+   for shad_ip in iplist:
+      if shad_ip != iplist[-1]:
+         sip = sip + shad_ip[0] + ts
+      else:
+         sip = sip + shad_ip[0]
+   ipsc = iplist_s[0] + ' ' + iplist_c[0] + ' ' + sip
+   print('ips:'+ipsc+'|sshpassword:'+passw)
+   sys.exit(1)
+if __name__ == "__main__":
+    main(sys.argv)
 
 os.system('/usr/bin/which sshpass;if [[ "$?" != "0" ]];then  yum -y install sshpass ;fi')
 # update your ip search location
@@ -23,6 +87,7 @@ file = open('create_user.js', 'a')
 file.write('db.createUser({user:"admin", pwd:"%s", roles:[{role:"userAdminAnyDatabase",db:"admin"}]});\n' %(password))
 file.write('db.createUser({user: "root",pwd: "%s",roles:[{role: "root", db: "admin"}]});\n' %(password))
 file.close()
+
 #检实例安装结果函数
 def function_psef(ip,passw):
    # 执行命令
@@ -46,12 +111,6 @@ def function_primary(ip,passw,port):
    else:
       return 'SECONDARY'
 
-#    cluster_mongodb_mutil.py
-#    mongo_mutil.sh
-#    mongodb_install.sh
-#    config_install.sh
-#    mongos_install.sh
-# 列表中一个元素包含一个分片集群地址
 os.system('openssl rand -base64 753 > keyFile;chmod 400 keyFile')
 shardname='rsshd'
 
@@ -76,7 +135,7 @@ for ips in iplist:
          successfuls.append(example_ps)
       for n in range(60):
          time.sleep(n)
-         if successfuls.count('successful_install') == 3 and list(set(successfuls))[0] == 'successful_install':
+         if successfuls.count('successful_install') == len(ips[0].split()) and list(set(successfuls))[0] == 'successful_install':
             pd = 'successful_install'
             break
          else:
@@ -152,7 +211,7 @@ while True:
       successfuls.append(example_ps)
    for n in range(60):
       time.sleep(n)
-      if successfuls.count('successful_install') == 3 and list(set(successfuls))[0] == 'successful_install':
+      if successfuls.count('successful_install') == len(iplist_c[0].split()) and list(set(successfuls))[0] == 'successful_install':
          print('config副本集'+iplist_c[0]+'实例部署成功!')
          pd = 'successful_install'
          break
@@ -165,6 +224,7 @@ while True:
    if pd == 'successful_install':
       print('副本集 '+iplist_c[0]+' 实例安装成功!')
       break
+
 # config副本集IP拼接
 st = ','
 ipstr = ''
@@ -190,7 +250,6 @@ os.system('sshpass -p \'%s\'  ssh  root@%s -o StrictHostKeyChecking=no "echo \'%
 
 #判断config的副本集是否已产生主节点
 while True:
-#   port = 27017
    primary_node = function_primary(ip,passw,portc)
    for n in range(60):
       time.sleep(n)
@@ -269,7 +328,6 @@ for ips in iplist:
    addshard = shardname+str(shardn)+'/'+ipsts 
    addshard_tail = '\\")'
    addshardc = addshard_head + addshard + addshard_tail
-   print(addshardc)
    shows = 'sh.status()'
    os.system('sshpass -p \'%s\'  ssh  root@%s -o StrictHostKeyChecking=no "echo \'%s\'|/usr/local/mongodb/bin/mongo localhost:30000"' %(passw,iplist_s[0].split(' ')[0],addshardc))
    time.sleep(3)
