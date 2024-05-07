@@ -1,4 +1,4 @@
-# MongoDB_cluster_install
+# MongoDB_sharding_install
 #HGR_HLN_HJQ
 
 #///////////////////////////////////////////
