@@ -23,9 +23,6 @@ else
    echo $addText" exist in "$file
 fi
 }
-# shardno3rd=`expr $shardid \* 3`
-#shardno1st=`expr $shardno3rd - 2`
-#shardno1st=$shardid
 #wget mongodb-linux-x86_64-rhel70-4.4.18.tgz
 tar xzvf mongodb-linux-x86_64-rhel70-$ver.tgz -C /opt
 ln -snf /opt/mongodb-linux-x86_64-rhel70-$ver /usr/local/mongodb
@@ -37,14 +34,13 @@ logdir=$dataroot'/mongodb/logs'
 # rm $datadir/* -rf
 mkdir -p $logdir
 
-#mkdir -p ${dataroot}/mongodb/config
 mkdir ${dataroot}/mongodb/conf
 
 addcmd 'export PATH=$PATH:/usr/local/mongodb/bin' ~/.bash_profile
 source ~/.bash_profile
 groupadd mongodb
 useradd -g mongodb mongodb
-cat > /usr/lib/systemd/system/mongod_multiple_servers@.service << EOF
+cat > /usr/lib/systemd/system/mongod_multiple_mongod@.service << EOF
 [Unit]
 Description=MongoDB Database Server
 Documentation=https://docs.mongodb.org/manual
@@ -129,7 +125,6 @@ sed -i "s|`grep cacheSizeGB ${dataroot}/mongodb/conf/mongo_shard$i.yml|sed 's/^[
     cd $basedir
     rpath=`pwd -P`
     chown -R mongodb:mongodb $rpath
-    systemctl restart mongod_multiple_servers@$i.service
-    systemctl enable mongod_multiple_servers@$i.service
+    systemctl restart mongod_multiple_mongod@$i.service
+    systemctl enable mongod_multiple_mongod@$i.service
 #done
-
