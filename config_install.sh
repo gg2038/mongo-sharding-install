@@ -1,4 +1,3 @@
-
 #!/bin/bash
 # config install
 # /data/mongodb /{data,logs,conf}
@@ -40,7 +39,7 @@ addcmd 'export PATH=$PATH:/usr/local/mongodb/bin' ~/.bash_profile
 source ~/.bash_profile
 groupadd mongodb
 useradd -g mongodb mongodb
-cat > /usr/lib/systemd/system/mongod_multiple_servers@.service << EOF
+cat > /usr/lib/systemd/system/mongod_multiple_config@.service << EOF
 [Unit]
 Description=MongoDB Database Server
 Documentation=https://docs.mongodb.org/manual
@@ -123,5 +122,5 @@ sed -i "s|`grep cacheSizeGB ${dataroot}/mongodb/conf/mongo_config.yml|sed 's/^[ 
     cd $basedir
     rpath=`pwd -P`
     chown -R mongodb:mongodb $rpath
-    systemctl restart mongod_multiple_servers@1.service
-    systemctl enable mongod_multiple_servers@1.service
+    systemctl restart mongod_multiple_config@1.service
+    systemctl enable mongod_multiple_config@1.service
