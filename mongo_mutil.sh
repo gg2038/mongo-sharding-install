@@ -2,8 +2,8 @@
 
 
 #shardid=1
-vers='4.4.18'
-dataroot='/data'
+vers=`grep 'vers=' cluster_mongodb_mutil.py|cut -d"'" -f2`
+dataroot=`grep 'dataroot=' cluster_mongodb_mutil.py|cut -d"'" -f2`
 passw=$3
 
 function  install_shard(){
