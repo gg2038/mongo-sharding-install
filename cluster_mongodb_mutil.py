@@ -7,7 +7,8 @@ import time
 import random,string
 import subprocess
 passw='xxxx'
-
+vers='4.4.18' #MongoDB版本
+dataroot='/data' #安装的数据目录
 account_verify = 1 # Cluster validation start ,0 关闭验证(Turn off validation) / １开启验证(Enable verification)
 
 #mongos IP, port:30000
